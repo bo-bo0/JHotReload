@@ -83,6 +83,7 @@ public class JReader<T>
         return switch (valExample)
         {
             case Integer _ -> type.cast(Integer.valueOf(val));
+            case Float _ -> type.cast(Float.valueOf(val));
             case Double _ -> type.cast(Double.valueOf(val));
             case Boolean _ -> type.cast(Boolean.valueOf(val));
             case Character _ -> type.cast(val.charAt(0));

@@ -24,6 +24,7 @@ public final class HotVariable<T>
     {
         boolean valid =
                 value instanceof Integer ||
+                value instanceof Float ||
                 value instanceof Double ||
                 value instanceof String ||
                 value instanceof Character;
