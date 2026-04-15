@@ -32,13 +32,18 @@ public final class HotVariable<T>
         { throw new InvalidHotVariableTypeException(value.getClass() + " cannot be used as the type of a Hot Variable"); }
     }
 
-    public HotVariable(T value, String name)
+    public static <T> HotVariable<T> of(T value, String name)
     {
-        validTypeCheck(value);
-
         Class<?> containerClass = StackWalker
                 .getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)
                 .getCallerClass();
+
+        return new HotVariable<>(value, name, containerClass);
+    }
+
+    private HotVariable(T value, String name, Class<?> containerClass)
+    {
+        validTypeCheck(value);
 
         if (containerClass.getName().equals(this.getClass().getName()))
         { throw new HotVariableContainerClassNotFoundException("Cannot locate container class of Hot Variable \"" + name + "\""); }
@@ -52,7 +57,7 @@ public final class HotVariable<T>
         writeInFile(containerClass);
     }
 
-    public T getValue()
+    public T get()
     {
         try
         {
