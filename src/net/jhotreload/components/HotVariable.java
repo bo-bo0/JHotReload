@@ -6,7 +6,7 @@ import net.jhotreload.jsonparser.JReader;
 import net.jhotreload.jsonparser.JWriter;
 import net.jhotreload.jsonparser.exceptions.JReadException;
 import net.jhotreload.jsonparser.exceptions.JWriteException;
-import net.jhotreload.utils.Paths;
+import net.jhotreload.utils.JPaths;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -69,7 +69,7 @@ public final class HotVariable<T>
         this.value = value;
         this.lastValidValue = value;
         this.name = name;
-        this.filePathString = "JHotReload/" + Paths.classToPath(containerClass) + ".json";
+        this.filePathString = String.valueOf(JPaths.classToFullJsonPath(containerClass));
         reader = new JReader<>(Path.of(filePathString), name, value);
         HotManager.registerVariable(name, containerClass);
         writeInFile(containerClass);
@@ -114,8 +114,8 @@ public final class HotVariable<T>
 
     private void writeInFile(Class<?> containerClass)
     {
-        String path = "JHotReload/" + Paths.classToPath(containerClass) + ".json";
-        var writer = new JWriter(Path.of(path));
+        Path path = JPaths.classToFullJsonPath(containerClass);
+        var writer = new JWriter(path);
 
         try
         { writer.write(getJsonValue(), containerClass); }
