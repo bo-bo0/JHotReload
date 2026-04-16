@@ -36,36 +36,20 @@ public class JReader<T>
         {
             if (l.contains(":"))
             {
-                String ph;
+                String readVariableName = l.substring(0, l.indexOf(':'))
+                        .replace(',', ' ')
+                        .replace(':', ' ')
+                        .trim();
 
-                ph = l.substring(0, l.indexOf(':'));
-                ph = ph.replace(',', ' ');
-                ph = ph.replace(':', ' ');
-                ph = ph.trim();
-
-                if (ph.equals("\"" + variableName + "\""))
+                if (readVariableName.equals("\"" + variableName + "\""))
                 {
-                    String[] tokens = l.split("\\s+");
-                    val = tokens[2];
+                    int lastIndex = (l.contains(",") ? l.lastIndexOf(",") : l.length());
+                    val = l.substring(l.indexOf(':') + 1, lastIndex);
 
                     if (valExample instanceof String || valExample instanceof Character)
                     {
-                        var builder = new StringBuilder(val);
-
-                        for (int i = 3; i < tokens.length; i++)
-                        {
-                            builder.append(" ");
-                            builder.append(tokens[i]);
-                        }
-
-                        if (builder.charAt(0) == '\"')
-                        { builder.replace(0, 1, ""); }
-
-                        int len = builder.length();
-                        if (builder.charAt(len - 1) == '\"')
-                        { builder.replace(len - 1, len, ""); }
-
-                        val = builder.toString();
+                        String[] tokens = l.split(":");
+                        val = formatString(val, tokens);
                     }
 
                     break;
@@ -73,6 +57,31 @@ public class JReader<T>
             }
         }
         return val;
+    }
+
+    private static String formatString(String val, String[] tokens)
+    {
+        var builder = new StringBuilder(val);
+
+        for (int i = 3; i < tokens.length; i++)
+        {
+            builder.append(" ");
+            builder.append(tokens[i]);
+        }
+
+        if (builder.charAt(0) == ' ')
+        { builder.replace(0, 1, ""); }
+
+        int indexOfFirstQuotationMarks = builder.indexOf("\"");
+
+        if (indexOfFirstQuotationMarks >= 0)
+        { builder.replace(0, indexOfFirstQuotationMarks + 1, ""); }
+
+        int len = builder.length();
+        if (builder.charAt(len - 1) == '\"')
+        { builder.replace(len - 1, len, ""); }
+
+        return builder.toString();
     }
 
     public T read() throws IOException
@@ -90,6 +99,5 @@ public class JReader<T>
 
             default -> type.cast(val);
         };
-
     }
 }
