@@ -29,7 +29,8 @@ public final class HotVariable<T> implements JVariable<T>
                 value instanceof Float ||
                 value instanceof Double ||
                 value instanceof String ||
-                value instanceof Character;
+                value instanceof Character ||
+                value instanceof Boolean;
 
         if (!valid)
         { throw new InvalidHotVariableTypeException(value.getClass() + " cannot be used as the type of a Hot Variable"); }
@@ -138,6 +139,6 @@ public final class HotVariable<T> implements JVariable<T>
     @Override
     public String toString()
     {
-        return "Hot Variable -> " + getJsonValue();
+        return "HotVariable@" + filePathString + "->" + name;
     }
 }

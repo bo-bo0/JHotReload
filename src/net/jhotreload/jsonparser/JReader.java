@@ -52,6 +52,9 @@ public class JReader<T>
                         val = formatString(val, tokens);
                     }
 
+                    else
+                    { val = val.trim(); }
+
                     break;
                 }
             }
@@ -77,9 +80,9 @@ public class JReader<T>
         if (indexOfFirstQuotationMarks >= 0)
         { builder.replace(0, indexOfFirstQuotationMarks + 1, ""); }
 
-        int len = builder.length();
-        if (builder.charAt(len - 1) == '\"')
-        { builder.replace(len - 1, len, ""); }
+        int indexOfLastQuotationMarks = builder.indexOf("\"");
+        if (indexOfLastQuotationMarks >= 0)
+        { builder.replace(indexOfLastQuotationMarks, indexOfLastQuotationMarks + 1, ""); }
 
         return builder.toString();
     }
