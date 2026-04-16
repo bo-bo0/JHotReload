@@ -1,6 +1,7 @@
 package net.jhotreload.components;
 
 import net.jhotreload.components.exceptions.DuplicateHotVariableException;
+import net.jhotreload.components.variables.HotPair;
 import net.jhotreload.utils.JPaths;
 
 import java.util.ArrayList;
