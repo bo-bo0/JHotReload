@@ -1,5 +1,7 @@
-package net.jhotreload.components;
+package net.jhotreload.components.variables;
 
+import net.jhotreload.components.HotManager;
+import net.jhotreload.components.JHotReloadConfig;
 import net.jhotreload.components.exceptions.HotVariableContainerClassNotFoundException;
 import net.jhotreload.components.exceptions.InvalidHotVariableTypeException;
 import net.jhotreload.jsonparser.JReader;
@@ -11,7 +13,7 @@ import net.jhotreload.utils.JPaths;
 import java.io.IOException;
 import java.nio.file.Path;
 
-public final class HotVariable<T>
+public final class HotVariable<T> implements JVariable<T>
 {
     private final JReader<T> reader;
     private final String name;
@@ -50,13 +52,16 @@ public final class HotVariable<T>
      * @author bo bo
      * @since 2026-04-15
      */
-    public static <T> HotVariable<T> of(T value, String name)
+    public static <T> JVariable<T> of(T value, String name)
     {
         Class<?> containerClass = StackWalker
                 .getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)
                 .getCallerClass();
 
-        return new HotVariable<>(value, name, containerClass);
+        if (JHotReloadConfig.isJHotReloadingActive())
+        { return new HotVariable<>(value, name, containerClass); }
+        else
+        { return new DisabledHotVariable<>(value); }
     }
 
     private HotVariable(T value, String name, Class<?> containerClass)
@@ -84,6 +89,7 @@ public final class HotVariable<T>
      * @author bo bo
      * @since 2026-04-15
      */
+    @Override
     public T get()
     {
         try
@@ -100,11 +106,17 @@ public final class HotVariable<T>
         { return lastValidValue; }
     }
 
+    @Override
+    public void set(T value)
+    {
+        this.value = value;
+    }
+
     private String getJsonValue()
     {
         String val;
 
-        if (value instanceof  String || value instanceof Character)
+        if (value instanceof String || value instanceof Character)
         { val = "\"" + value + "\"";}
         else
         { val = value.toString(); }

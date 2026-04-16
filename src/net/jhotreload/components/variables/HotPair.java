@@ -1,3 +1,3 @@
-package net.jhotreload.components;
+package net.jhotreload.components.variables;
 
 public record HotPair(String path, String name) { }
