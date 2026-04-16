@@ -1,7 +1,7 @@
 package net.jhotreload.components;
 
 import net.jhotreload.components.exceptions.DuplicateHotVariableException;
-import net.jhotreload.utils.Paths;
+import net.jhotreload.utils.JPaths;
 
 import java.util.ArrayList;
 
@@ -11,7 +11,7 @@ public abstract class HotManager
 
     public static void registerVariable(String variableName, Class<?> variableClass)
     {
-        hotVariables.add(new HotPair(Paths.classToPath(variableClass), variableName));
+        hotVariables.add(new HotPair(JPaths.classToPathString(variableClass), variableName));
 
         if (hotVariables.size() > hotVariables.stream().distinct().toList().size())
         {
@@ -25,7 +25,7 @@ public abstract class HotManager
         var list = new ArrayList<String>();
         for (var v : hotVariables)
         {
-            if (v.path().equals(Paths.classToPath(containerClass)))
+            if (v.path().equals(JPaths.classToPathString(containerClass)))
             { list.add(v.name()); }
         }
 
