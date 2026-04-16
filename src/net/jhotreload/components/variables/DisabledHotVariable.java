@@ -20,4 +20,10 @@ public final class DisabledHotVariable<T> implements JVariable<T>
     {
         this.value = value;
     }
+
+    @Override
+    public String toString()
+    {
+        return "HotVariable (disabled)";
+    }
 }
