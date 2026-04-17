@@ -13,4 +13,9 @@ public abstract class JPaths
     {
         return Path.of("JHotReload/" + classToPathString(someClass) + ".json");
     }
+
+    public static Path getJHotReloadConfigFilePath()
+    {
+        return Path.of("JHotReload/@CONFIGJHotReload.json");
+    }
 }

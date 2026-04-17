@@ -6,9 +6,13 @@ import net.jhotreload.utils.JPaths;
 
 import java.util.ArrayList;
 
-public abstract class HotManager
+public final class HotManager
 {
     private static final ArrayList<HotPair> hotVariables = new ArrayList<>();
+    private static int registeredVariablesCount = 0;
+    private static boolean isRegisteredVariablesCountDisabled;
+
+    private HotManager() {}
 
     public static void registerVariable(String variableName, Class<?> variableClass)
     {
@@ -19,6 +23,8 @@ public abstract class HotManager
             throw new DuplicateHotVariableException("Hot Variable \"" + variableName + "\" was defined more" +
                 " than once");
         }
+
+        registeredVariablesCount++;
     }
 
     public static ArrayList<String> getVariableNamesIn(Class<?> containerClass)
@@ -31,5 +37,21 @@ public abstract class HotManager
         }
 
         return list;
+    }
+
+    public static int getRegisteredVariablesCount()
+    {
+        return registeredVariablesCount;
+    }
+
+    public static void disableRegisteredVariablesCount()
+    {
+        registeredVariablesCount = -1;
+        isRegisteredVariablesCountDisabled = true;
+    }
+
+    public static boolean isRegisteredVariablesCountDisabled()
+    {
+        return isRegisteredVariablesCountDisabled;
     }
 }

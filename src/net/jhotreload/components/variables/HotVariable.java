@@ -22,6 +22,8 @@ public final class HotVariable<T> implements JVariable<T>
     private T lastValidValue;
     private T value;
 
+    private static final StackWalker WALKER = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
+
     private void validTypeCheck(T value)
     {
         boolean valid =
@@ -55,9 +57,18 @@ public final class HotVariable<T> implements JVariable<T>
      */
     public static <T> JVariable<T> of(T value, String name)
     {
-        Class<?> containerClass = StackWalker
-                .getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)
-                .getCallerClass();
+        Class<?> containerClass = HotVariable.class;
+
+        if (!HotManager.isRegisteredVariablesCountDisabled())
+        { containerClass = WALKER.getCallerClass(); }
+
+        if (HotManager.getRegisteredVariablesCount() == 0)
+        {
+            JHotReloadConfig.init();
+
+            if (!JHotReloadConfig.isJHotReloadingActive())
+            { HotManager.disableRegisteredVariablesCount(); }
+        }
 
         if (JHotReloadConfig.isJHotReloadingActive())
         { return new HotVariable<>(value, name, containerClass); }
