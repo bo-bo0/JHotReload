@@ -1,7 +1,7 @@
 package net.jhotreload.components.variables;
 
 @SuppressWarnings("unused")
-public interface JVariable<T>
+public sealed interface JVariable<T> permits HotVariable, DisabledHotVariable
 {
     T get();
     void set(T value);
