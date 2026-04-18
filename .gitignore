@@ -4,6 +4,7 @@
 /JHotReload/
 /src/META-INF/
 /META-INF/
+/src/test/
 *.json
 *.iml
 *.MF
@@ -43,3 +44,4 @@ bin/
 
 # Ignore Gradle build output directory
 build
+/.gradle/
