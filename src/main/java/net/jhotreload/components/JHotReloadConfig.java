@@ -1,9 +1,9 @@
 package net.jhotreload.components;
 
 import net.jhotreload.jsonparser.JReader;
+import net.jhotreload.utils.JPaths;
 import net.jhotreload.utils.exceptions.JHotReloadConfigReadException;
 import net.jhotreload.utils.exceptions.JHotReloadConfigWriteException;
-import net.jhotreload.utils.JPaths;
 
 import java.io.IOException;
 import java.nio.file.Files;
