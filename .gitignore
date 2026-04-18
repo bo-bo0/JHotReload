@@ -1,8 +1,12 @@
 ### JHot Reload ###
 /src/testmodule/
+/src/JHotReload/
 /JHotReload/
+/src/META-INF/
+/META-INF/
 *.json
 *.iml
+*.MF
 
 ### IntelliJ IDEA ###
 out/
@@ -34,3 +38,8 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+# Ignore Gradle project-specific cache directory
+.gradle
+
+# Ignore Gradle build output directory
+build

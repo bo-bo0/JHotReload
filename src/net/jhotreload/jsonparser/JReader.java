@@ -87,6 +87,7 @@ public class JReader<T>
         return builder.toString();
     }
 
+    @SuppressWarnings("unused")
     public T read() throws IOException
     {
         var fileLines = new ArrayList<>(Files.readAllLines(filePath));
@@ -94,11 +95,11 @@ public class JReader<T>
 
         return switch (valExample)
         {
-            case Integer _ -> type.cast(Integer.valueOf(val));
-            case Float _ -> type.cast(Float.valueOf(val));
-            case Double _ -> type.cast(Double.valueOf(val));
-            case Boolean _ -> type.cast(Boolean.valueOf(val));
-            case Character _ -> type.cast(val.charAt(0));
+            case Integer i -> type.cast(Integer.valueOf(val));
+            case Float f -> type.cast(Float.valueOf(val));
+            case Double d -> type.cast(Double.valueOf(val));
+            case Boolean b -> type.cast(Boolean.valueOf(val));
+            case Character c -> type.cast(val.charAt(0));
 
             default -> type.cast(val);
         };
