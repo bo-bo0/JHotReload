@@ -18,6 +18,7 @@ public final class HotVariable<T> implements JVariable<T>
     private final JReader<T> reader;
     private final String name;
     private final String filePathString;
+    private final JWriter writer;
 
     private T lastValidValue;
     private T value;
@@ -88,6 +89,7 @@ public final class HotVariable<T> implements JVariable<T>
         this.name = name;
         this.filePathString = String.valueOf(JPaths.classToFullJsonPath(containerClass));
         reader = new JReader<>(Path.of(filePathString), name, value);
+        writer = new JWriter(Path.of(filePathString));
         HotManager.registerVariable(name, containerClass);
         writeInFile(containerClass);
     }
@@ -121,7 +123,13 @@ public final class HotVariable<T> implements JVariable<T>
     @Override
     public void set(T value)
     {
-        this.value = value;
+        try
+        {
+            this.value = value;
+            writer.replaceValue(name, value.toString());
+        }
+        catch (IOException ex)
+        { System.err.println("Could not access/locate \"" + filePathString + "\" to change the value of \"" + name + "\"."); }
     }
 
     private String getJsonValue()
@@ -139,7 +147,6 @@ public final class HotVariable<T> implements JVariable<T>
     private void writeInFile(Class<?> containerClass)
     {
         Path path = JPaths.classToFullJsonPath(containerClass);
-        var writer = new JWriter(path);
 
         try
         { writer.write(getJsonValue(), containerClass); }
