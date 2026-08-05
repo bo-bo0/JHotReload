@@ -59,6 +59,7 @@ public class JReader<T>
                 }
             }
         }
+
         return val;
     }
 
