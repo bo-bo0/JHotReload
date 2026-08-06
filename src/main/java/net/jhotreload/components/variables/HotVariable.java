@@ -4,6 +4,7 @@ import net.jhotreload.components.HotManager;
 import net.jhotreload.components.JHotReloadConfig;
 import net.jhotreload.components.exceptions.HotVariableContainerClassNotFoundException;
 import net.jhotreload.components.exceptions.InvalidHotVariableTypeException;
+import net.jhotreload.jsonparser.Caster;
 import net.jhotreload.jsonparser.JReader;
 import net.jhotreload.jsonparser.JWriter;
 import net.jhotreload.jsonparser.exceptions.JReadException;
@@ -11,6 +12,7 @@ import net.jhotreload.jsonparser.exceptions.JWriteException;
 import net.jhotreload.utils.JPaths;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 public final class HotVariable<T> implements JVariable<T>
@@ -74,7 +76,7 @@ public final class HotVariable<T> implements JVariable<T>
         if (JHotReloadConfig.isJHotReloadingActive())
         { return new HotVariable<>(value, name, containerClass); }
         else
-        { return new DisabledHotVariable<>(value); }
+        { return new DisabledHotVariable<>(value, JPaths.classToFullJsonPath(containerClass), name); }
     }
 
     private HotVariable(T value, String name, Class<?> containerClass)
@@ -88,10 +90,32 @@ public final class HotVariable<T> implements JVariable<T>
         this.lastValidValue = value;
         this.name = name;
         this.filePathString = String.valueOf(JPaths.classToFullJsonPath(containerClass));
-        reader = new JReader<>(Path.of(filePathString), name, value);
-        writer = new JWriter(Path.of(filePathString));
+        Path path = Path.of(filePathString);
+        reader = new JReader<>(path, name, value);
+        writer = new JWriter(path);
         HotManager.registerVariable(name, containerClass);
-        writeInFile(containerClass);
+
+        String variableJsonValue;
+
+        try
+        { variableJsonValue = reader.readVariableStringValue(name); }
+        catch (IOException ex)
+        {
+            throw new JReadException("JHotReload could not access \"" + filePathString + "\" when attempting to read " +
+                    "the value of \"" + name + "\".");
+        }
+
+        if (!Files.exists(path) || variableJsonValue == null)
+        { writeInFile(containerClass);  }
+        else
+        {
+            var caster = new Caster<T>();
+
+            var val = caster.castString(variableJsonValue, this.lastValidValue);
+            this.value = val;
+            this.lastValidValue = val;
+            writeInFile(containerClass);
+        }
     }
 
     /**
@@ -126,6 +150,7 @@ public final class HotVariable<T> implements JVariable<T>
         try
         {
             this.value = value;
+            this.lastValidValue = value;
             writer.replaceValue(name, value.toString());
         }
         catch (IOException ex)

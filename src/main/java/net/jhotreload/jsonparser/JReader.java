@@ -10,23 +10,59 @@ public class JReader<T>
     private final Path filePath;
     private final String variableName;
     private final T valExample;
-
-    private Class<T> type;
+    private final Caster<T> CASTER = new Caster<>();
 
     public JReader(Path filePath, String variableName, T valExample)
     {
         this.filePath = filePath;
         this.variableName = variableName;
         this.valExample = valExample;
-
-        setType(valExample);
     }
 
-    @SuppressWarnings("unchecked")
-    private void setType(T valExample)
+    public T read() throws IOException
     {
-        type = (Class<T>)valExample.getClass();
+        var fileLines = new ArrayList<>(Files.readAllLines(filePath));
+        String val = findValueInJson(fileLines);
+
+        return CASTER.castString(val, valExample);
     }
+
+    public String readVariableStringValue(String variableName) throws IOException
+    {
+        if (!Files.exists(filePath))
+        { return null; }
+
+        var fileLines = new ArrayList<>(Files.readAllLines(filePath));
+
+        for (var line : fileLines)
+        {
+            var formattedLineBuilder = new StringBuilder(line.trim().split("\\s+")[0].trim());
+
+            int invalidCharacterIndex = formattedLineBuilder.indexOf(":");
+
+            if (invalidCharacterIndex > -1)
+            { formattedLineBuilder.replace(invalidCharacterIndex, invalidCharacterIndex + 1, ""); }
+
+            var result = formattedLineBuilder.toString();
+            result = ParserUtils.removePunctuationFromString(result, '"');
+
+            if (result.equals(variableName))
+            {
+                var valueBuilder = new StringBuilder(line);
+                valueBuilder.replace(0, valueBuilder.indexOf(":") + 1, "");
+
+                int commaIndex = valueBuilder.indexOf(",");
+
+                if (commaIndex > -1)
+                { valueBuilder.replace(commaIndex, commaIndex + 1, ""); }
+
+                return valueBuilder.toString().trim();
+            }
+        }
+
+        return null;
+    }
+
 
     private String findValueInJson(ArrayList<String> fileLines)
     {
@@ -86,23 +122,5 @@ public class JReader<T>
         { builder.replace(indexOfLastQuotationMarks, indexOfLastQuotationMarks + 1, ""); }
 
         return builder.toString();
-    }
-
-    @SuppressWarnings("unused")
-    public T read() throws IOException
-    {
-        var fileLines = new ArrayList<>(Files.readAllLines(filePath));
-        String val = findValueInJson(fileLines);
-
-        return switch (valExample)
-        {
-            case Integer i -> type.cast(Integer.valueOf(val));
-            case Float f -> type.cast(Float.valueOf(val));
-            case Double d -> type.cast(Double.valueOf(val));
-            case Boolean b -> type.cast(Boolean.valueOf(val));
-            case Character c -> type.cast(val.charAt(0));
-
-            default -> type.cast(val);
-        };
     }
 }
