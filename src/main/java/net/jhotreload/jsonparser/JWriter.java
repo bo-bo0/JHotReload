@@ -109,7 +109,8 @@ public class JWriter
             variableLineContent = line.trim();
             var currentVariableName = variableLineContent.split("\\s+")[0].trim();
 
-            currentVariableName = removePunctuationFromString(currentVariableName, ',', ':', '}', ']', '{', '[', '"');
+            currentVariableName =
+                    ParserUtils.removePunctuationFromString(currentVariableName, ',', ':', '}', ']', '{', '[', '"');
 
             if (currentVariableName.equals(variableName))
             {
@@ -148,30 +149,4 @@ public class JWriter
         Files.write(filePath, fileLines);
     }
 
-    private String removePunctuationFromString(String string, char punctuation)
-    {
-        var fixerBuilder = new StringBuilder(string);
-        int fixerIndex;
-
-        do
-        {
-            fixerIndex = fixerBuilder.indexOf("" + punctuation);
-
-            if (fixerIndex > -1)
-            { fixerBuilder.replace(fixerIndex, fixerIndex + 1, ""); }
-
-        } while(fixerIndex > -1);
-
-        return fixerBuilder.toString();
-    }
-
-    private String removePunctuationFromString(String string, char... punctuation)
-    {
-        String result = string;
-
-        for (var p : punctuation)
-        { result = removePunctuationFromString(result, p); }
-
-        return result;
-    }
 }
