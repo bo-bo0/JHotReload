@@ -61,6 +61,12 @@ public final class JHotReloadConfig
         { generateDefaultConfigFile(configFilePath); }
 
         readConfigFromFile(configFilePath);
+
+        if (isJHotReloadingActive())
+        {
+            try { JsonChecker.deleteUnusedJsonFiles(Path.of("JHotReload")); }
+            catch (IOException ex) { System.err.println("JHotReload failed to delete unused JSON files"); }
+        }
     }
 
     public static boolean isJHotReloadingActive()
