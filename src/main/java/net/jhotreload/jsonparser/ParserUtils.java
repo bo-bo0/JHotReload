@@ -28,4 +28,9 @@ public class ParserUtils
 
         return result;
     }
+
+    /*package-private*/ static StringBuilder trimStringBuilder(StringBuilder stringBuilder)
+    {
+        return new StringBuilder(stringBuilder.toString().trim());
+    }
 }

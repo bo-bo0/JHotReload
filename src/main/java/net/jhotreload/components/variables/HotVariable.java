@@ -98,11 +98,11 @@ public final class HotVariable<T> implements JVariable<T>
         String variableJsonValue;
 
         try
-        { variableJsonValue = reader.readVariableStringValue(name); }
+        { variableJsonValue = reader.readVariableStringValue(); }
         catch (IOException ex)
         {
             throw new JReadException("JHotReload could not access \"" + filePathString + "\" when attempting to read " +
-                    "the value of \"" + name + "\".");
+                    "the value of \"" + name + "\"");
         }
 
         if (!Files.exists(path) || variableJsonValue == null)
