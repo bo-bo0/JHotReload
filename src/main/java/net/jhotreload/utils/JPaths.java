@@ -2,8 +2,10 @@ package net.jhotreload.utils;
 
 import java.nio.file.Path;
 
-public abstract class JPaths
+public final class JPaths
 {
+    private JPaths() {}
+
     public static String classToPathString(Class<?> someClass)
     {
        return someClass.getName().replace('.', '/');
@@ -17,5 +19,10 @@ public abstract class JPaths
     public static Path getJHotReloadConfigFilePath()
     {
         return Path.of("JHotReload/@CONFIGJHotReload.json");
+    }
+
+    public static Path getJHotReloadErroLogFilePath()
+    {
+        return Path.of("JHotReload/@ErrorLog.log");
     }
 }

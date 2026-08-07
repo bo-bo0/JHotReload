@@ -14,11 +14,13 @@ public final class JHotReloadConfig
     private static final String defaultJsonConfig =
                 """
                 {
-                    "isJHotReloadActive" : true
+                    "isJHotReloadActive" : true,
+                    "crashOnJReadWriteFailure" : false
                 }
                 """;
 
     private static boolean JHotReloadingIsActive;
+    private static boolean crashOnJReadWriteFailure;
 
     private JHotReloadConfig() {}
 
@@ -47,6 +49,9 @@ public final class JHotReloadConfig
         {
             var booleanReader = new JReader<>(configFilePah, "isJHotReloadActive", JHotReloadingIsActive);
             JHotReloadingIsActive = booleanReader.read();
+
+            booleanReader = new JReader<>(configFilePah, "crashOnJReadWriteFailure", crashOnJReadWriteFailure);
+            crashOnJReadWriteFailure = booleanReader.read();
         }
 
         catch (IOException ex)
@@ -64,6 +69,12 @@ public final class JHotReloadConfig
 
         if (isJHotReloadingActive())
         {
+            if (Files.exists(JPaths.getJHotReloadErroLogFilePath()))
+            {
+                try { Files.delete(JPaths.getJHotReloadErroLogFilePath()); }
+                catch (IOException ex) { System.err.println("JHotReload failed to delete latest error log file"); }
+            }
+
             try { JsonChecker.deleteUnusedJsonFiles(Path.of("JHotReload")); }
             catch (IOException ex) { System.err.println("JHotReload failed to delete unused JSON files"); }
         }
@@ -72,5 +83,10 @@ public final class JHotReloadConfig
     public static boolean isJHotReloadingActive()
     {
         return JHotReloadingIsActive;
+    }
+
+    public static boolean isCrashOnJReadWriteFailureActive()
+    {
+        return crashOnJReadWriteFailure;
     }
 }

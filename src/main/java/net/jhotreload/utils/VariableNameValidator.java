@@ -1,7 +1,9 @@
 package net.jhotreload.utils;
 
-public class VariableNameValidator
+public final class VariableNameValidator
 {
+    private VariableNameValidator() {}
+
     private static final String JAVA_VARIABLE_REGEX =
             "^(?!(?:abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|do|" +
                     "double|else|enum|extends|final|finally|float|for|goto|if|implements|import|instanceof" +

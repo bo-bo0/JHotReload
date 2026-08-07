@@ -7,9 +7,8 @@ import net.jhotreload.components.exceptions.InvalidHotVariableTypeException;
 import net.jhotreload.jsonparser.Caster;
 import net.jhotreload.jsonparser.JReader;
 import net.jhotreload.jsonparser.JWriter;
-import net.jhotreload.jsonparser.exceptions.JReadException;
-import net.jhotreload.jsonparser.exceptions.JWriteException;
 import net.jhotreload.utils.JPaths;
+import net.jhotreload.utils.JThrowHelper;
 import net.jhotreload.utils.VariableNameValidator;
 
 import java.io.IOException;
@@ -98,13 +97,13 @@ public final class HotVariable<T> implements JVariable<T>
         writer = new JWriter(path);
         HotManager.registerVariable(name, containerClass);
 
-        String variableJsonValue;
+        String variableJsonValue = null;
 
         try
         { variableJsonValue = reader.readVariableStringValue(); }
         catch (IOException ex)
         {
-            throw new JReadException("JHotReload could not access \"" + filePathString + "\" when attempting to read " +
+            JThrowHelper.signalJReadFailure("JHotReload could not access \"" + filePathString + "\" when attempting to read " +
                     "the value of \"" + name + "\"");
         }
 
@@ -141,7 +140,10 @@ public final class HotVariable<T> implements JVariable<T>
         }
 
         catch (IOException ex)
-        { throw new JReadException("Hot Variable \"" + name + "\" failed to read from " + filePathString); }
+        {
+            JThrowHelper.signalJReadFailure("Hot Variable \"" + name + "\" failed to read from " + filePathString);
+            return lastValidValue;
+        }
 
         catch (NumberFormatException | StringIndexOutOfBoundsException | ArrayIndexOutOfBoundsException ex)
         { return lastValidValue; }
@@ -179,7 +181,7 @@ public final class HotVariable<T> implements JVariable<T>
         try
         { writer.write(getJsonValue(), containerClass); }
         catch (IOException ex)
-        { throw new JWriteException("Hot Variable \"" + name + "\" failed to be written in " + path); }
+        { JThrowHelper.signalJWriteFailure("Hot Variable \"" + name + "\" failed to be written in " + path); }
     }
 
     @Override

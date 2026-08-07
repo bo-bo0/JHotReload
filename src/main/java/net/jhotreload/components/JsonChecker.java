@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;
 
-/*package-private*/ class JsonChecker
+/*package-private*/ final class JsonChecker
 {
+    private JsonChecker() {}
+
     /*package-private*/ static void deleteUnusedJsonFiles(Path jsonRoot) throws IOException
     {
         try (var paths = Files.walk(jsonRoot))
