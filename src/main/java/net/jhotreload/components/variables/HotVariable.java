@@ -62,10 +62,7 @@ public final class HotVariable<T> implements JVariable<T>
     {
         VariableNameValidator.validateVariableName(name);
 
-        Class<?> containerClass = HotVariable.class;
-
-        if (!HotManager.isRegisteredVariablesCountDisabled())
-        { containerClass = WALKER.getCallerClass(); }
+        Class<?> containerClass = WALKER.getCallerClass();;
 
         if (HotManager.getRegisteredVariablesCount() == 0)
         {
@@ -88,35 +85,51 @@ public final class HotVariable<T> implements JVariable<T>
         if (containerClass.getName().equals(this.getClass().getName()))
         { throw new HotVariableContainerClassNotFoundException("Cannot locate container class of Hot Variable \"" + name + "\""); }
 
-        this.value = value;
-        this.lastValidValue = value;
+        var alreadyPresentVariable = HotManager.registerVariable(name, containerClass, this);
+
+        if (alreadyPresentVariable != null)
+        {
+            var caster = new Caster<T>();
+
+            this.value = caster.unsafeGenericCast(alreadyPresentVariable.value);
+            this.lastValidValue = caster.unsafeGenericCast(alreadyPresentVariable.lastValidValue);
+        }
+
+        else
+        {
+            this.value = value;
+            this.lastValidValue = value;
+        }
+
         this.name = name;
         this.filePathString = String.valueOf(JPaths.classToFullJsonPath(containerClass));
         Path path = Path.of(filePathString);
         reader = new JReader<>(path, name, value);
         writer = new JWriter(path);
-        HotManager.registerVariable(name, containerClass);
 
-        String variableJsonValue = null;
-
-        try
-        { variableJsonValue = reader.readVariableStringValue(); }
-        catch (IOException ex)
+        if (alreadyPresentVariable == null)
         {
-            JThrowHelper.signalJReadFailure("JHotReload could not access \"" + filePathString + "\" when attempting to read " +
-                    "the value of \"" + name + "\"");
-        }
+            String variableJsonValue = null;
 
-        if (!Files.exists(path) || variableJsonValue == null)
-        { writeInFile(containerClass);  }
-        else
-        {
-            var caster = new Caster<T>();
+            try
+            { variableJsonValue = reader.readVariableStringValue(); }
+            catch (IOException ex)
+            {
+                JThrowHelper.signalJReadFailure("JHotReload could not access \"" + filePathString + "\" when attempting to read " +
+                        "the value of \"" + name + "\"");
+            }
 
-            var val = caster.castString(variableJsonValue, this.lastValidValue);
-            this.value = val;
-            this.lastValidValue = val;
-            writeInFile(containerClass);
+            if (!Files.exists(path) || variableJsonValue == null)
+            { writeInFile(containerClass); }
+            else
+            {
+                var caster = new Caster<T>();
+
+                var val = caster.castString(variableJsonValue, this.lastValidValue);
+                this.value = val;
+                this.lastValidValue = val;
+                writeInFile(containerClass);
+            }
         }
     }
 

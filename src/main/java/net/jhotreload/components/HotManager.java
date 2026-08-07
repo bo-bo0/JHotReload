@@ -1,29 +1,40 @@
 package net.jhotreload.components;
 
 import net.jhotreload.components.variables.HotPair;
+import net.jhotreload.components.variables.HotVariable;
 import net.jhotreload.utils.JPaths;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 public final class HotManager
 {
-    private static final HashSet<HotPair> hotVariables = new HashSet<>();
+    private static final HashMap<HotPair, HotVariable<?>> hotVariables = new HashMap<>();
     private static int registeredVariablesCount = 0;
     private static boolean isRegisteredVariablesCountDisabled;
 
     private HotManager() {}
 
-    public static void registerVariable(String variableName, Class<?> variableClass)
+    public static HotVariable<?> registerVariable(String variableName, Class<?> variableClass, HotVariable<?> hotVariable)
     {
-        if (hotVariables.add(new HotPair(JPaths.classToPathString(variableClass), variableName)))
-        { registeredVariablesCount++; }
+        var key = new HotPair(JPaths.classToPathString(variableClass), variableName);
+
+        if (hotVariables.containsKey(key))
+        { return hotVariables.get(key); }
+
+        else
+        {
+            hotVariables.put(key, hotVariable);
+            registeredVariablesCount++;
+            return null;
+        }
     }
 
     public static ArrayList<String> getVariableNamesIn(Class<?> containerClass)
     {
         var list = new ArrayList<String>();
-        for (var v : hotVariables)
+        for (var v : hotVariables.keySet())
         {
             if (v.path().equals(JPaths.classToPathString(containerClass)))
             { list.add(v.name()); }

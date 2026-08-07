@@ -24,4 +24,10 @@ public class Caster<T>
     {
         return (Class<T>)value.getClass();
     }
+
+    @SuppressWarnings("unchecked")
+    public T unsafeGenericCast(Object value)
+    {
+        return (T)value;
+    }
 }
