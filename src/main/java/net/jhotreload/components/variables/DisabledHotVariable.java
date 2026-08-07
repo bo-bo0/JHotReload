@@ -26,8 +26,13 @@ public final class DisabledHotVariable<T> implements JVariable<T>
         { this.value = value; }
         else
         {
-            var caster = new Caster<T>();
-            this.value = caster.castString(readValue, value);
+            try
+            {
+                var caster = new Caster<T>();
+                this.value = caster.castString(readValue, value);
+            }
+            catch (NumberFormatException ex)
+            { this.value = value; }
         }
 
     }

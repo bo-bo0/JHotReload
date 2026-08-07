@@ -44,6 +44,7 @@ public final class JThrowHelper
                 StandardOpenOption.APPEND
             );
         }
-        catch (IOException ex) { System.err.println("JHotReload failed to update error log"); }
+        catch (IOException ex)
+        { System.err.println("JHotReload failed to update error log"); }
     }
 }
