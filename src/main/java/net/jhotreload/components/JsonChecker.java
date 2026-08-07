@@ -15,6 +15,7 @@ import java.util.ArrayList;
             paths
                 .filter(Files::isRegularFile)
                 .filter(path -> path.toString().endsWith(".json"))
+                .filter(path -> !path.getFileName().toString().startsWith("@"))
                 .forEach(jsonFile ->
                 {
                     var relativePath = jsonRoot.relativize(jsonFile);
