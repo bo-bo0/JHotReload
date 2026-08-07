@@ -141,10 +141,13 @@ public final class HotVariable<T> implements JVariable<T>
             {
                 var caster = new Caster<T>();
 
-                var val = caster.castString(variableJsonValue, this.lastValidValue);
-                this.value = val;
-                this.lastValidValue = val;
-                writeInFile(containerClass);
+                try
+                {
+                    var val = caster.castString(variableJsonValue, this.lastValidValue);
+                    this.value = val;
+                    this.lastValidValue = val;
+                    writeInFile(containerClass);
+                } catch (NumberFormatException ignored) {}
             }
         }
     }
