@@ -10,6 +10,7 @@ import net.jhotreload.jsonparser.JWriter;
 import net.jhotreload.jsonparser.exceptions.JReadException;
 import net.jhotreload.jsonparser.exceptions.JWriteException;
 import net.jhotreload.utils.JPaths;
+import net.jhotreload.utils.VariableNameValidator;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -60,6 +61,8 @@ public final class HotVariable<T> implements JVariable<T>
      */
     public static <T> JVariable<T> of(T value, String name)
     {
+        VariableNameValidator.validateVariableName(name);
+
         Class<?> containerClass = HotVariable.class;
 
         if (!HotManager.isRegisteredVariablesCountDisabled())
