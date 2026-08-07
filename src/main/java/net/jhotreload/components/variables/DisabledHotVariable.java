@@ -2,7 +2,7 @@ package net.jhotreload.components.variables;
 
 import net.jhotreload.jsonparser.Caster;
 import net.jhotreload.jsonparser.JReader;
-import net.jhotreload.jsonparser.exceptions.JReadException;
+import net.jhotreload.utils.JThrowHelper;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -15,12 +15,12 @@ public final class DisabledHotVariable<T> implements JVariable<T>
     {
         var reader = new JReader<>(filePath, variableName, value);
 
-        String readValue;
+        String readValue = null;
 
         try
         { readValue = reader.readVariableStringValue(); }
         catch (IOException ex)
-        { throw new JReadException("Could not access \"" + filePath + "\" to read the value of \"" + variableName + "\"."); }
+        { JThrowHelper.signalJReadFailure("Could not access \"" + filePath + "\" to read the value of \"" + variableName + "\""); }
 
         if (readValue == null)
         { this.value = value; }
