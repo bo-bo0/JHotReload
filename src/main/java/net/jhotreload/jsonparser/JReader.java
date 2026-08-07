@@ -27,7 +27,7 @@ public class JReader<T>
         return CASTER.castString(val, valExample);
     }
 
-    public String readVariableStringValue(String variableName) throws IOException
+    public String readVariableStringValue() throws IOException
     {
         if (!Files.exists(filePath))
         { return null; }
@@ -43,18 +43,29 @@ public class JReader<T>
             if (invalidCharacterIndex > -1)
             { formattedLineBuilder.replace(invalidCharacterIndex, invalidCharacterIndex + 1, ""); }
 
-            var result = formattedLineBuilder.toString();
-            result = ParserUtils.removePunctuationFromString(result, '"');
+            var currentLineVariableName = formattedLineBuilder.toString();
+            currentLineVariableName = ParserUtils.removePunctuationFromString(currentLineVariableName, '"');
 
-            if (result.equals(variableName))
+            if (currentLineVariableName.equals(variableName))
             {
                 var valueBuilder = new StringBuilder(line);
+
                 valueBuilder.replace(0, valueBuilder.indexOf(":") + 1, "");
+                valueBuilder = ParserUtils.trimStringBuilder(valueBuilder);
 
-                int commaIndex = valueBuilder.indexOf(",");
+                int commaIndex = valueBuilder.lastIndexOf(",");
 
-                if (commaIndex > -1)
-                { valueBuilder.replace(commaIndex, commaIndex + 1, ""); }
+                if (commaIndex == valueBuilder.length() - 1)
+                {
+                    valueBuilder.replace(commaIndex, commaIndex + 1, "");
+                    valueBuilder = ParserUtils.trimStringBuilder(valueBuilder);
+                }
+
+                if (valueBuilder.charAt(0) == '\"')
+                { valueBuilder.replace(0, 1, ""); }
+
+                if (valueBuilder.charAt(valueBuilder.length() - 1) == '\"')
+                { valueBuilder.replace(valueBuilder.length() - 1, valueBuilder.length(), ""); }
 
                 return valueBuilder.toString().trim();
             }
@@ -62,7 +73,6 @@ public class JReader<T>
 
         return null;
     }
-
 
     private String findValueInJson(ArrayList<String> fileLines)
     {
@@ -79,8 +89,11 @@ public class JReader<T>
 
                 if (readVariableName.equals("\"" + variableName + "\""))
                 {
-                    int lastIndex = (l.contains(",") ? l.lastIndexOf(",") : l.length());
-                    val = l.substring(l.indexOf(':') + 1, lastIndex);
+                    int lastIndex = l.length();
+                    val = l.substring(l.indexOf(':') + 1, lastIndex).trim();
+
+                    if (val.charAt(val.length() - 1) == ',')
+                    { val = val.substring(0, val.length() - 1).trim(); }
 
                     if (valExample instanceof String || valExample instanceof Character)
                     {

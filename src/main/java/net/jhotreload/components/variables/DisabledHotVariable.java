@@ -18,7 +18,7 @@ public final class DisabledHotVariable<T> implements JVariable<T>
         String readValue;
 
         try
-        { readValue = reader.readVariableStringValue(variableName); }
+        { readValue = reader.readVariableStringValue(); }
         catch (IOException ex)
         { throw new JReadException("Could not access \"" + filePath + "\" to read the value of \"" + variableName + "\"."); }
 
