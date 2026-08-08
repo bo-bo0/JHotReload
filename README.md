@@ -1,4 +1,4 @@
-# JHot Reload
+# JHotReload
 
 This is a simple Java library that can be used to quickly change the values of your
 variables at runtime to see what effect they produce without the need to re-compile and re-run the program over and over again, everything is done through json files!
