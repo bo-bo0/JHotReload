@@ -12,7 +12,6 @@ import net.jhotreload.utils.JThrowHelper;
 import net.jhotreload.utils.VariableNameValidator;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 public final class HotVariable<T> implements JVariable<T>
@@ -62,7 +61,7 @@ public final class HotVariable<T> implements JVariable<T>
     {
         VariableNameValidator.validateVariableName(name);
 
-        Class<?> containerClass = WALKER.getCallerClass();;
+        Class<?> containerClass = WALKER.getCallerClass();
 
         if (HotManager.getRegisteredVariablesCount() == 0)
         {
@@ -135,7 +134,7 @@ public final class HotVariable<T> implements JVariable<T>
                         "the value of \"" + name + "\"");
             }
 
-            if (!Files.exists(path) || variableJsonValue == null)
+            if (variableJsonValue == null)
             { writeInFile(containerClass); }
             else
             {

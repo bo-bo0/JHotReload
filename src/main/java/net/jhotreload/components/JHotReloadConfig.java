@@ -4,6 +4,7 @@ import net.jhotreload.jsonparser.JReader;
 import net.jhotreload.utils.JPaths;
 import net.jhotreload.utils.exceptions.JHotReloadConfigReadException;
 import net.jhotreload.utils.exceptions.JHotReloadConfigWriteException;
+import net.jhotreload.utils.JBakedResources;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -63,7 +64,15 @@ public final class JHotReloadConfig
         var configFilePath = JPaths.getJHotReloadConfigFilePath();
 
         if (!Files.exists(configFilePath))
-        { generateDefaultConfigFile(configFilePath); }
+        {
+            try
+            {
+                if (!JBakedResources.copyToFileIfPresent(configFilePath))
+                { generateDefaultConfigFile(configFilePath); }
+            }
+            catch (IOException ex)
+            { throw new JHotReloadConfigReadException("JHot Reload failed to restore " + "baked config file."); }
+        }
 
         readConfigFromFile(configFilePath);
 
@@ -71,12 +80,16 @@ public final class JHotReloadConfig
         {
             if (Files.exists(JPaths.getJHotReloadErroLogFilePath()))
             {
-                try { Files.delete(JPaths.getJHotReloadErroLogFilePath()); }
-                catch (IOException ex) { System.err.println("JHotReload failed to delete latest error log file"); }
+                try
+                { Files.delete(JPaths.getJHotReloadErroLogFilePath()); }
+                catch (IOException ex)
+                { System.err.println("JHotReload failed to delete " + "latest error log file"); }
             }
 
-            try { JsonChecker.deleteUnusedJsonFiles(Path.of("JHotReload")); }
-            catch (IOException ex) { System.err.println("JHotReload failed to delete unused JSON files"); }
+            try
+            { JsonChecker.deleteUnusedJsonFiles(Path.of("JHotReload")); }
+            catch (IOException ex)
+            {System.err.println("JHotReload failed to delete " + "unused JSON files"); }
         }
     }
 
