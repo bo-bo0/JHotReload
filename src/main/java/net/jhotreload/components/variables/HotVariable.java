@@ -74,23 +74,7 @@ public final class HotVariable<T> implements JVariable<T>
         if (JHotReloadConfig.isJHotReloadingActive())
         { return new HotVariable<>(value, name, containerClass); }
         else
-        {
-            var alreadyPresentVariable = HotManager.getRegisteredDisabledHotVariable(name, containerClass);
-
-            if (alreadyPresentVariable == null)
-            {
-                var newInstance = new DisabledHotVariable<>(value, JPaths.classToFullJsonPath(containerClass), name);
-
-                HotManager.registerDisabledVariable(name, containerClass, newInstance);
-                return new DisabledHotVariable<>(value, JPaths.classToFullJsonPath(containerClass), name);
-            }
-
-            else
-            {
-                var caster = new Caster<JVariable<T>>();
-                return caster.unsafeGenericCast(alreadyPresentVariable);
-            }
-        }
+        { return new DisabledHotVariable<>(value, JPaths.classToFullJsonPath(containerClass), name); }
     }
 
     private HotVariable(T value, String name, Class<?> containerClass)

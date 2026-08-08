@@ -1,17 +1,14 @@
 package net.jhotreload.components;
 
-import net.jhotreload.components.variables.DisabledHotVariable;
 import net.jhotreload.components.variables.HotPair;
 import net.jhotreload.components.variables.HotVariable;
 import net.jhotreload.utils.JPaths;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
 public final class HotManager
 {
-    private static final HashMap<HotPair, DisabledHotVariable<?>> disabledHotVariables = new HashMap<>();
     private static final HashMap<HotPair, HotVariable<?>> hotVariables = new HashMap<>();
     private static int registeredVariablesCount = 0;
     private static boolean isRegisteredVariablesCountDisabled;
@@ -59,18 +56,5 @@ public final class HotManager
     public static boolean isRegisteredVariablesCountDisabled()
     {
         return isRegisteredVariablesCountDisabled;
-    }
-
-    public static void registerDisabledVariable(String variableName, Class<?> variableClass,
-        DisabledHotVariable<?> disabledHotVariable)
-    {
-        var key = new HotPair(JPaths.classToPathString(variableClass), variableName);
-        disabledHotVariables.put(key, disabledHotVariable);
-    }
-
-    public static DisabledHotVariable<?> getRegisteredDisabledHotVariable(String variableName, Class<?> variableClass)
-    {
-        var key = new HotPair(JPaths.classToPathString(variableClass), variableName);
-        return disabledHotVariables.get(key);
     }
 }
