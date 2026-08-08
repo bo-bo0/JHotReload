@@ -22,3 +22,15 @@ java {
         languageVersion = JavaLanguageVersion.of(21)
     }
 }
+
+tasks.jar
+        {
+            manifest
+                    {
+                        attributes(
+                                "Implementation-Title": "JHotReload",
+                                "Implementation-Version": project.version,
+                                "Automatic-Module-Name": "net.jhotreload"
+                        )
+                    }
+        }
