@@ -22,7 +22,7 @@ You could include this library in your Java projects and then use it directly th
 
 After importing the library into your Java project, you can use it via its API.
 
-First include the needed imports:
+First include the needed imports:<br>
 <code>import net.jhotreload.components.variables.HotVariable;</code>
 <code>import net.jhotreload.components.variables.JVariable;</code>
 
@@ -35,12 +35,12 @@ or (you only need the first import in this case):
 <code>var name = HotVariable.of(value, "name");</code>
 
 Of course, only manually editable types are supported.
-Supported types:
-<code>Integer</code>
-<code>Float</code>
-<code>Double</code>
-<code>Boolean</code>
-<code>Character</code>
+Supported types:<br>
+<code>Integer</code><br>
+<code>Float</code><br>
+<code>Double</code><br>
+<code>Boolean</code><br>
+<code>Character</code><br>
 <code>String</code>
 
 <b>WARNING: Two or more Hot Variables cannot share the same name (the one assigned in the constructor) if they are in the same class. In that case, if they are of the same type the one declared last will overwrite the others, else you'll get an error.</b>
