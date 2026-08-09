@@ -23,7 +23,7 @@ You could include this library in your Java projects and then use it directly th
 After importing the library into your Java project, you can use it via its API.
 
 First include the needed imports:<br>
-<code>import net.jhotreload.components.variables.HotVariable;</code>
+<code>import net.jhotreload.components.variables.HotVariable;</code><br>
 <code>import net.jhotreload.components.variables.JVariable;</code>
 
 The only thing you need to do now is declare the variable you want to modify at runtime as a Hot Variable:
@@ -34,7 +34,7 @@ or (you only need the first import in this case):
 
 <code>var name = HotVariable.of(value, "name");</code>
 
-Of course, only manually editable types are supported.
+Of course, only manually editable types are supported.<br>
 Supported types:<br>
 <code>Integer</code><br>
 <code>Float</code><br>
