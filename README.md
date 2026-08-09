@@ -1,5 +1,5 @@
 <div align=center>
-    <img src="reporesources/logo.png" width=150 alt="JHotReload logo">
+    <img src="reporesources/logo.png" width=200 alt="JHotReload logo">
 </div>
 
 <h1 align="center"> JHotReload </h1>
