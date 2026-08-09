@@ -20,7 +20,7 @@ You could include this library in your Java projects and then use it directly th
 
 <h2 align="center" id="htui">How to use it? (via API)</h2>
 
-After importing the library into your Java project, you can use it via its API.
+After importing the library in your Java project, you can use it via its API.
 
 First include the needed imports:<br>
 <code>import net.jhotreload.components.variables.HotVariable;</code><br>
