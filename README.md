@@ -45,8 +45,8 @@ Supported types:<br>
 
 <b>WARNING: Two or more Hot Variables cannot share the same name (the one assigned in the constructor) if they are in the same class. In that case, if they are of the same type the one declared last will overwrite the others, else you'll get an error.</b>
 
-Now you can use your variable in code normally with:
-<code>name.set(newValue);</code>
+Now you can use your variable in code normally with:<br>
+<code>name.set(newValue);</code><br>
 <code>name.get();</code>
 
 <h4 align=center>JHot reloading</h4>
