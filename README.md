@@ -144,6 +144,6 @@ If one or more JHotReload related errors occur during execution, JHotReload will
 
 <br><br>
 
-<footer align="center">
+<div align="center">
     <b>&copy; bo bo - 2026</b>
-</footer>
+</div>
