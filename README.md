@@ -4,6 +4,8 @@
 
 <h1 align="center"> JHotReload </h1>
 
+<i>Java 21 or above required</i>
+
 <strong>JHotReload</strong> is a Java library that can be used to quickly change variable values at runtime without the need to re-compile and re-run the program over and over again, everything is done through JSON files!
 
 - Disclaimer: Yes, I know this is not real Hot Reload, in fact, this is not a Hot Reload library, it's a JHot Reload library! (does 'J' stand for JSON or Java? I dunno)
